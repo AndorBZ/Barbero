@@ -42,7 +42,7 @@ public class Barberia {
     public void atenderCliente() throws InterruptedException {
         lock.lock();
         try {
-            if (sillas.isEmpty()) {
+            if (!sillas.isEmpty()) {
                 Cliente cliente = sillas.element();
                 System.out.println("El Barbero atiende a " + cliente.getNombre());
                 conditionCliente.signal();
