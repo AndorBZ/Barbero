@@ -22,10 +22,12 @@ public class Barberia {
     public void entraCliente(Cliente cliente) {
         lock.lock();
         try {
+            if (sillas.isEmpty()) {
+                conditionBarbero.signal();
+            }
             if (sillas.size() <= sillasDisponibles) {
                 System.out.println("Entra " + cliente.getNombre() + " y se sienta a esperar...");
                 sillas.add(cliente);
-                conditionBarbero.signal();
                 conditionCliente.await();
             } else {
                 cliente.marcharse();
@@ -40,7 +42,7 @@ public class Barberia {
     public void atenderCliente() throws InterruptedException {
         lock.lock();
         try {
-            if (!sillas.isEmpty()) {
+            if (sillas.isEmpty()) {
                 Cliente cliente = sillas.element();
                 System.out.println("El Barbero atiende a " + cliente.getNombre());
                 conditionCliente.signal();
